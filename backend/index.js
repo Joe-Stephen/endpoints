@@ -1,13 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
-const PORT = 5000 || process.env.PORT;
-const app = express();
+const connectDB=require('./config/db');
+const PORT = 3000 || process.env.PORT;
 
-app.get('/',(req, res)=>{
-    console.log('home page');
-    const text = 'hello'
-    res.json('Jello')
-})
+const app = express();
+connectDB();
+
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+
+app.use('/',require('./userSide/routes/userRoutes'))
 
 app.listen(PORT, (req, res)=>{
     console.log(`The server is running on ${PORT}`);
