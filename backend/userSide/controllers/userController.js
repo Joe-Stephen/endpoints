@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const jwt=require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
+const sendEmail = require('../../services/sendOTP');
 
 //@desc loading home page
 //@route GET /
@@ -31,6 +32,18 @@ const validateLoginDetails =asyncHandler ( async(req, res)=>{
     // res.status(500).json("Couldn't load user login page!");
     // throw new Error("Couldn't load user login page!");
 })
+
+//@desc send otp
+//@route GET /otp
+//@access Public
+const sendOtp = asyncHandler(async(req, res)=>{
+    const {email}=req.body;
+    const otp = await sendEmail(email);
+    console.log('otp is = ',otp);
+    res.status(200).json(`OTP is ${otp}`)
+});
+
+
 
 //@desc validating user creation details
 //@route POST /login
@@ -86,42 +99,36 @@ const generateToken=(id)=>{
 //@route POST /updateUser/:userId
 //@access Public
 const updateUserDetails = asyncHandler (async(req, res)=>{
-    const {first_name, last_name, email, password, confirm_password, location, profile_url} = req.body;
-    if(!first_name|| !last_name|| !email|| !password|| !confirm_password|| !location || !profile_url){
+    const {first_name, last_name, password, email, confirm_password, location} = req.body;
+    if(!first_name|| !last_name|| !password || !email || !confirm_password || !location){
         res.status(400)
         throw new Error('Please add all fields.')
     }
     const existingUser= await User.findOne({email});
-    if(existingUser){
+    if(!existingUser){
         res.status(400)
-        throw new Error('This email is already registered.');
+        throw new Error('No user found with this email id.');
     }
     //hashing password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    //user creation
-    const user=await User.create({
+    //user data updation
+    const updatedUser=await User.findByIdAndUpdate(req.params.id,{
         first_name,
         last_name,
         email,
         password:hashedPassword,
         location,
-        profile_url
+    },{
+        new:true,
     })
-    console.log('User created');
-    if(user){
-        res.status(201).json({
-            _id:user._id,
-            name:user.first_name+" "+user.last_name,
-            email:user.email,
-            location:user.loction,
-            profile_url:user.profile_url,
-            token: generateToken(user._id)
-        });
+    console.log('User data updated');
+    if(updatedUser){
+        res.status(201).json(updatedUser);
     }else{
-        res.status(500).json("User registration failed!.");
-        throw new Error('User registration failed!.');
+        res.status(500).json("User data updation failed!.");
+        throw new Error('User data updation failed!.');
     }
 });
 
@@ -132,4 +139,5 @@ module.exports = {
     validateLoginDetails,
     registerNewUser,
     updateUserDetails,
+    sendOtp,
 }
