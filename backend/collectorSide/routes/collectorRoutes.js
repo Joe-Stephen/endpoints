@@ -9,6 +9,6 @@ const {
 collectorRouter.route('/login').post(validateLoginDetails);
 collectorRouter.route("/sign-up").post(registerNewCollector);
 collectorRouter.route('/verifyEmail').post(sendOtp);
-collectorRouter.route("/updateCollector/:collectorID").post(updateCollectorDetails);
+collectorRouter.route("/updateCollector").post(updateCollectorDetails);
 
 module.exports = collectorRouter;

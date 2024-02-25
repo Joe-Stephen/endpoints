@@ -124,6 +124,7 @@ const updateCollectorDetails = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please add all fields.");
   }
+  console.log(name, password, email, confirm_password, location, collecting_wastes);
   const existingCollector = await Collector.findOne({ email });
   if (!existingCollector) {
     res.status(400);
@@ -135,7 +136,7 @@ const updateCollectorDetails = asyncHandler(async (req, res) => {
 
   //Collector data updation
   const updatedCollector = await Collector.findByIdAndUpdate(
-    req.params.id,
+    existingCollector._id,
     {
       name,
       email,
