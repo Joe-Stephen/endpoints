@@ -8,6 +8,7 @@ import { sendOtp, verifyOtp, reset } from "../../features/auth/userAuthSlice";
 const VerifyOtp = () => {
   const [formData, setFormData] = useState({ otpAttempt: "" });
   const [seconds, setSeconds] = useState(30);
+  const [otpVerified, setOtpVerified] = useState(false); // Track OTP verification status
 
   const { otpAttempt } = formData;
 
@@ -30,11 +31,11 @@ const VerifyOtp = () => {
     if (isError) {
       toast.error(message);
     }
-    // if (isSuccess || user) {
-    //   navigate("/changePassword");
-    // }
+    if ((isSuccess && otpVerified)||user) {
+      navigate("/changePassword"); // Navigate only if OTP is verified
+    }
     dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, isSuccess, message, navigate, dispatch, otpVerified]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -52,14 +53,16 @@ const VerifyOtp = () => {
       userId,
     };
     dispatch(verifyOtp(otpData));
+    setOtpVerified(true); // Mark OTP as verified
   };
 
   const onResend = (e) => {
-    e.preventDefault(); // Prevent the default behavior of the button click event
+    e.preventDefault();
     const email = localStorage.getItem("userEmail");
     const userEmail = { email };
     setSeconds(30);
     dispatch(sendOtp(userEmail));
+    setOtpVerified(false); // Reset OTP verification status when resending
   };
 
   return (

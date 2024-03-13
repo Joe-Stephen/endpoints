@@ -66,17 +66,18 @@ const sendOtp = asyncHandler(async (req, res) => {
 //@route POST /verifyEmail
 //@access Public
 const verifyOtp = asyncHandler(async (req, res) => {
-  // const { otpData } = req.body;
   console.log("body= ", req.body);
   const user = await User.findOne({ _id: req.body.userId });
   console.log("user", user);
   if (req.body.otpAttempt !== user.otp) {
-    throw new Error("Incorrect OTP");
+    res.status(400).json({ error: "Incorrect OTP." });
+    throw new Error("Incorrect OTP.");
   } else if (user.otpExpiration < new Date()) {
+    res.status(400).json({ error: "OTP has been expired. Please retry." });
     throw new Error("OTP has been expired. Please retry.");
   } else if (req.body.otpAttempt === user.otp) {
     await User.findByIdAndUpdate(user._id, { $unset: { otp: "" } });
-    res.status(200).json("OTP has been verified.");
+    return res.status(200).json("OTP has been verified.");
   }
 });
 
