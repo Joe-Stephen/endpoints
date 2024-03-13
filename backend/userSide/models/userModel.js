@@ -18,7 +18,7 @@ const userSchema=mongoose.Schema({
         type:String,
         required:[true, 'Please add your location.']
     },
-    is_blocked:{
+    is_blocked:{    
         type:Boolean,
         default:false,
     },
@@ -33,7 +33,9 @@ const userSchema=mongoose.Schema({
     profile_url:{
         type:String,
         default:'',
-    }
+    },
+    otp:{type:String},
+    otpExpiration:{type:Date}
 },
 {
     timestamp:true

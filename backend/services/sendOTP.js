@@ -26,6 +26,7 @@ const sendEmail = asyncHandler(async (email) => {
   });
 
   transporter.sendMail(mailOptions);
+  const expirationTime = new Date(Date.now() + 60000); // 1 minute expiration
   return otp;
 });
 

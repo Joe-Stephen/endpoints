@@ -1,45 +1,55 @@
 import React from "react";
 import { FaUser } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signUp, reset } from "../../features/auth/userAuthSlice";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirm_password: "",
     location: "",
   });
 
-  const { name, email, password, confirm_password, location } = formData;
+  const { username, email, password, confirm_password, location } = formData;
+  console.log("formdata=", formData);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.userAuth
   );
 
-    useEffect(() => {
-      if (isError) {
-        toast.error(message);
-      }
-      dispatch(reset())
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+      console.log(message)
 
-    }, [user, isError, dispatch, message, isSuccess]);
+    }
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, dispatch, message, isSuccess]);
 
   const onChange = (e) => {
-    setFormData({
+    setFormData((prevState) => ({
+      ...prevState,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     const userData = {
-      name,
+      username,
       email,
       password,
       confirm_password,
@@ -64,9 +74,9 @@ const SignUp = () => {
             <input
               type="text"
               className="form-control"
-              id="name"
-              name="name"
-              value={name}
+              id="username"
+              name="username"
+              value={username}
               placeholder="Enter your name"
               onChange={onChange}
             />

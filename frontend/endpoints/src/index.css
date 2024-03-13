@@ -9,6 +9,9 @@
 body {
   font-family: 'Poppins', sans-serif;
   height: 100vh;
+  background-image: url(../public/static/3865504_cleanup.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 a {
@@ -118,6 +121,12 @@ h3 {
   margin-bottom: 10px;
 }
 
+.form-subtext{
+  margin-top: -10px;
+  margin-bottom: 10px;
+  display: flex;  
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {
@@ -149,6 +158,22 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn-small{
+  padding: 2px 5px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background: #000;
+  color: #fff;
+  font-size: 13px;
+  font-weight: lighter;
+  cursor: pointer;
+  text-align: center;
+  appearance: button;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
 }
 
 .block-btn {

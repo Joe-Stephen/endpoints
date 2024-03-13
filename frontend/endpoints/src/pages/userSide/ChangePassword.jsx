@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { login, reset } from "../../features/auth/userAuthSlice";
+import { verifyOtp, reset, changePassword } from "../../features/auth/userAuthSlice";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const ChangePassword = () => {
   const [formData, setFormData] = useState({
-    email: "",
     password: "",
+    confirmPassword: "",
   });
 
-  const { email, password } = formData;
+  const { password, confirmPassword } = formData;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,8 +26,8 @@ const Login = () => {
     if (isError) {
       toast.error(message);
     }
-    if(isSuccess || user){
-      navigate('/');
+    if (isSuccess || user) {
+      navigate("/");
     }
     dispatch(reset());
   }, [user, isError, dispatch, message, isSuccess]);
@@ -35,59 +35,59 @@ const Login = () => {
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(),
     }));
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const loginData = {
-      email,
+    const userId = localStorage.getItem("userId");
+    const newPassword = {
+      userId,
       password,
+      confirmPassword,
     };
-    dispatch(login(loginData));
+    dispatch(changePassword(newPassword));
   };
 
   return (
     <>
       <section className="heading">
         <h1>
-          <FaSignInAlt /> Login
+          <FaSignInAlt /> Email verification
         </h1>
-        <p>Login and start setting goals</p>
+        <p>Enter the otp recieved</p>
       </section>
 
       <section className="form">
         <form onSubmit={onSubmit}>
           <div className="form-group">
             <input
-              type="email"
+              type="text"
               className="form-control"
-              id="email"
-              name="email"
-              value={email}
-              placeholder="Enter your email"
+              id="password"
+              name="password"
+              required
+              value={password}
+              placeholder="Enter the otp"
               onChange={onChange}
             />
           </div>
           <div className="form-group">
             <input
-              type="password"
+              type="text"
               className="form-control"
-              id="password"
-              name="password"
-              value={password}
-              placeholder="Enter your password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+              value={confirmPassword}
+              placeholder="Enter the otp"
               onChange={onChange}
             />
           </div>
-          <div className="form-subtext">
-
-          <Link to='/forgot-pasword'><p>Forgot password?</p></Link>
-          </div>
           <div className="form-group">
             <button type="submit" className="btn btn-block">
-              Submit
+              Verify otp
             </button>
           </div>
         </form>
@@ -96,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ChangePassword;
