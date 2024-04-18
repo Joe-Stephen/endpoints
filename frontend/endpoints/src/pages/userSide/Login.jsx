@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import GoogleAuth from "../../components/userComponents/GoogleAuth";
 import { FaSignInAlt } from "react-icons/fa";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -26,8 +26,8 @@ const Login = () => {
     if (isError) {
       toast.error(message);
     }
-    if(isSuccess || user){
-      navigate('/');
+    if (isSuccess || user) {
+      navigate("/");
     }
     dispatch(reset());
   }, [user, isError, dispatch, message, isSuccess]);
@@ -82,14 +82,21 @@ const Login = () => {
             />
           </div>
           <div className="form-subtext">
-
-          <Link to='/forgot-pasword'><p>Forgot password?</p></Link>
+            <Link to="/forgot-pasword">
+              <p>Forgot password?</p>
+            </Link>
           </div>
           <div className="form-group">
             <button type="submit" className="btn btn-block">
               Submit
             </button>
           </div>
+          {/* <div>
+            <h2>React Google Login</h2>
+            <br />
+            <br />
+          </div> */}
+          {/* <GoogleAuth /> */}
         </form>
       </section>
     </>
